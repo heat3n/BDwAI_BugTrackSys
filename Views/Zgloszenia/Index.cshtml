@@ -30,36 +30,51 @@
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <th>Autor</th>
+            }
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Temat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Opis)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataUtworzenia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Projekt.Nazwa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Priorytet.Nazwa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.Nazwa)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Temat)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Opis)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataUtworzenia)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Projekt.Nazwa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Priorytet.Nazwa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status.Nazwa)
+                </td>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        @(item.Uzytkownik?.UserName ?? "Nieznany")
+                    </td>
+                }
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BDwAI_BugTrackSys.Models
@@ -24,5 +25,6 @@ namespace BDwAI_BugTrackSys.Models
         public int StatusId { get; set; }
         public virtual Status? Status { get; set; }
         public string? UzytkownikId { get; set; }
+        public virtual IdentityUser? Uzytkownik { get; set; }
     }
 }

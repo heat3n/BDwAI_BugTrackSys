@@ -25,8 +25,17 @@ namespace BDwAI_BugTrackSys.Controllers
         // GET: Zgloszenia
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Zgloszenia.Include(z => z.Priorytet).Include(z => z.Projekt).Include(z => z.Status);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var zgloszenia = _context.Zgloszenia
+                .Include(z => z.Priorytet)
+                .Include(z => z.Projekt)
+                .Include(z => z.Status)
+                .Include(z => z.Uzytkownik);
+
+            if (User.IsInRole("Admin")) return View(await zgloszenia.ToListAsync());
+            else return View(await zgloszenia.Where(z => z.UzytkownikId == userId).ToListAsync());
+
         }
 
         // GET: Zgloszenia/Details/5
