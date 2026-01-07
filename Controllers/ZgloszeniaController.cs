@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace BDwAI_BugTrackSys.Controllers
 {
@@ -54,7 +55,7 @@ namespace BDwAI_BugTrackSys.Controllers
         {
             ViewData["PriorytetId"] = new SelectList(_context.Priorytety, "Id", "Nazwa");
             ViewData["ProjektId"] = new SelectList(_context.Projekty, "Id", "Nazwa");
-            ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa");
+            // ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa");
             return View();
         }
 
@@ -63,9 +64,11 @@ namespace BDwAI_BugTrackSys.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Temat,Opis,DataUtworzenia,ProjektId,PriorytetId,StatusId")] Zgloszenie zgloszenie)
+        public async Task<IActionResult> Create([Bind("Id,Temat,Opis,DataUtworzenia,ProjektId,PriorytetId")] Zgloszenie zgloszenie)
         {
             zgloszenie.DataUtworzenia = DateTime.Now;
+            zgloszenie.UzytkownikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            zgloszenie.StatusId = 1;
             if (ModelState.IsValid)
             {
                 _context.Add(zgloszenie);
@@ -74,7 +77,7 @@ namespace BDwAI_BugTrackSys.Controllers
             }
             ViewData["PriorytetId"] = new SelectList(_context.Priorytety, "Id", "Nazwa", zgloszenie.PriorytetId);
             ViewData["ProjektId"] = new SelectList(_context.Projekty, "Id", "Nazwa", zgloszenie.ProjektId);
-            ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa", zgloszenie.StatusId);
+            // ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa", zgloszenie.StatusId);
             return View(zgloszenie);
         }
 

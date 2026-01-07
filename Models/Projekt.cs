@@ -12,6 +12,6 @@ namespace BDwAI_BugTrackSys.Models
 
         public string Opis { get; set; }
 
-        public virtual ICollection<Zgloszenie> Zgloszenia { get; set; }
+        public virtual ICollection<Zgloszenie>? Zgloszenia { get; set; }
     }
 }
