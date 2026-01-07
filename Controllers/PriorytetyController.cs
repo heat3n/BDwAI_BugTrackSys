@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BDwAI_BugTrackSys.Data;
+using BDwAI_BugTrackSys.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BDwAI_BugTrackSys.Data;
-using BDwAI_BugTrackSys.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BDwAI_BugTrackSys.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PriorytetyController : Controller
     {
         private readonly ApplicationDbContext _context;
