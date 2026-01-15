@@ -91,6 +91,7 @@ namespace BDwAI_BugTrackSys.Controllers
         }
 
         // GET: Zgloszenia/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -121,10 +122,27 @@ namespace BDwAI_BugTrackSys.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("UzytkownikId");
+            ModelState.Remove("DataUtworzenia");
+            ModelState.Remove("Projekt");
+            ModelState.Remove("Priorytet");
+            ModelState.Remove("Status");
+            ModelState.Remove("Uzytkownik");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var oldZgloszenie = await _context.Zgloszenia
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(z => z.Id == id);
+
+                    if (oldZgloszenie != null)
+                    {
+                        zgloszenie.UzytkownikId = oldZgloszenie.UzytkownikId;
+                        zgloszenie.DataUtworzenia = oldZgloszenie.DataUtworzenia;
+                    }
+
                     _context.Update(zgloszenie);
                     await _context.SaveChangesAsync();
                 }
@@ -146,7 +164,7 @@ namespace BDwAI_BugTrackSys.Controllers
             ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa", zgloszenie.StatusId);
             return View(zgloszenie);
         }
-
+        
         // GET: Zgloszenia/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
