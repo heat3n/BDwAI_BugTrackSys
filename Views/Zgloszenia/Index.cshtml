@@ -42,7 +42,15 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            string rowClass = "";
+            bool isDone = false;
+            if (item.Status != null && (item.Status.Nazwa == "Zakonczone"))
+            {
+                rowClass = "table-success";
+                isDone = true;
+            }
+
+            <tr class="@rowClass">
                 <td>
                     @Html.DisplayFor(modelItem => item.Temat)
                 </td>
@@ -70,9 +78,15 @@
                 }
 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <span>|</span> <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    @if (User.IsInRole("Admin") || (User.Identity.IsAuthenticated && item.Uzytkownik != null && User.Identity.Name == item.Uzytkownik.UserName))
+                    {
+                        <span>|</span> <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
                 </td>
             </tr>
         }

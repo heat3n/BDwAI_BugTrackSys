@@ -50,6 +50,8 @@ namespace BDwAI_BugTrackSys.Controllers
                 .Include(z => z.Priorytet)
                 .Include(z => z.Projekt)
                 .Include(z => z.Status)
+                .Include(z => z.Uzytkownik)
+                .Include(z => z.Komentarze)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (zgloszenie == null)
             {
@@ -82,7 +84,7 @@ namespace BDwAI_BugTrackSys.Controllers
             {
                 _context.Add(zgloszenie);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Success));
             }
             ViewData["PriorytetId"] = new SelectList(_context.Priorytety, "Id", "Nazwa", zgloszenie.PriorytetId);
             ViewData["ProjektId"] = new SelectList(_context.Projekty, "Id", "Nazwa", zgloszenie.ProjektId);
@@ -204,6 +206,33 @@ namespace BDwAI_BugTrackSys.Controllers
         private bool ZgloszenieExists(int id)
         {
             return _context.Zgloszenia.Any(e => e.Id == id);
+        }
+        //POST: Komentarze
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(int zgloszenieId, string tresc)
+        {
+            if (string.IsNullOrWhiteSpace(tresc))
+            {
+                return RedirectToAction("Details", new { id = zgloszenieId });
+            }
+
+            var komentarz = new Komentarz
+            {
+                ZgloszenieId = zgloszenieId,
+                Tresc = tresc,
+                DataDodania = DateTime.Now,
+                Autor = User.Identity.Name ?? "Nieznany"
+            };
+
+            _context.Add(komentarz);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = zgloszenieId });
+        }
+        public IActionResult Success()
+        {
+            return View();
         }
     }
 }

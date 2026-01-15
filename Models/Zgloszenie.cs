@@ -26,5 +26,6 @@ namespace BDwAI_BugTrackSys.Models
         public virtual Status? Status { get; set; }
         public string? UzytkownikId { get; set; }
         public virtual IdentityUser? Uzytkownik { get; set; }
+        public virtual ICollection<Komentarz>? Komentarze { get; set; }
     }
 }
