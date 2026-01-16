@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BDwAI_BugTrackSys.Models
 {
@@ -10,6 +11,7 @@ namespace BDwAI_BugTrackSys.Models
         [Required]
         public string Nazwa { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Zgloszenie>? Zgloszenia { get; set; }
     }
 }

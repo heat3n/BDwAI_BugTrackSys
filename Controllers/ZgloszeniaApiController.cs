@@ -25,14 +25,24 @@ namespace BDwAI_BugTrackSys.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Zgloszenie>>> GetZgloszenia()
         {
-            return await _context.Zgloszenia.ToListAsync();
+            return await _context.Zgloszenia
+                .Include(z => z.Status)
+                .Include(z => z.Projekt) 
+                .Include(z => z.Priorytet)
+                .Include(z => z.Uzytkownik) 
+                .ToListAsync();
         }
 
         // GET: api/ZgloszeniaApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Zgloszenie>> GetZgloszenie(int id)
         {
-            var zgloszenie = await _context.Zgloszenia.FindAsync(id);
+            var zgloszenie = await _context.Zgloszenia
+                .Include(z => z.Status)
+                .Include(z => z.Projekt)
+                .Include(z => z.Priorytet)
+                .Include(z => z.Uzytkownik)
+                .FirstOrDefaultAsync(z => z.Id == id);
 
             if (zgloszenie == null)
             {
