@@ -10,7 +10,7 @@ namespace BDwAI_BugTrackSys.Data
             : base(options)
         {
         }
-
+        public DbSet<Powiadomienie> Powiadomienia { get; set; }
         public DbSet<Projekt> Projekty { get; set; }
         public DbSet<Priorytet> Priorytety { get; set; }
         public DbSet<Status> Statusy { get; set; }

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<BDwAI_BugTrackSys.Models.Powiadomienie>
+
+@{
+    ViewData["Title"] = "Moje Powiadomienia";
+}
+
+<h1>Moje Powiadomienia </h1>
+
+<div class="mb-3 text-end">
+    <form asp-action="ClearRead" method="post">
+        <button type="submit" class="btn btn-outline-secondary btn-sm">Usuń przeczytane</button>
+    </form>
+</div>
+
+<div class="list-group">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Brak nowych powiadomień.</div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            string activeClass = item.CzyPrzeczytane ? "list-group-item-light" : "list-group-item-warning";
+
+            <a asp-action="MarkAsReadAndGo" asp-route-id="@item.Id" class="list-group-item list-group-item-action @activeClass">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Zgłoszenie #@item.ZgloszenieId</h5>
+                    <small>@item.Data.ToString("g")</small>
+                </div>
+                <p class="mb-1">@item.Tresc</p>
+                @if (!item.CzyPrzeczytane)
+                {
+                    <span class="badge bg-danger">NOWE</span>
+                }
+            </a>
+        }
+    }
+</div>

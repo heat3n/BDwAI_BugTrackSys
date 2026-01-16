@@ -84,11 +84,37 @@ namespace BDwAI_BugTrackSys.Controllers
             {
                 _context.Add(zgloszenie);
                 await _context.SaveChangesAsync();
+
+                var adminRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+
+                if (adminRole != null)
+                {
+                    var adminUserIds = await _context.UserRoles
+                        .Where(ur => ur.RoleId == adminRole.Id)
+                        .Select(ur => ur.UserId)
+                        .ToListAsync();
+
+                    foreach (var adminId in adminUserIds)
+                    {
+                        if (adminId != zgloszenie.UzytkownikId)
+                        {
+                            var powiadomienie = new Powiadomienie
+                            {
+                                UzytkownikId = adminId,
+                                ZgloszenieId = zgloszenie.Id,
+                                Tresc = $"Nowe zgłoszenie: {zgloszenie.Temat} (od {User.Identity.Name})",
+                                Data = DateTime.Now,
+                                CzyPrzeczytane = false
+                            };
+                            _context.Add(powiadomienie);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Success));
             }
             ViewData["PriorytetId"] = new SelectList(_context.Priorytety, "Id", "Nazwa", zgloszenie.PriorytetId);
             ViewData["ProjektId"] = new SelectList(_context.Projekty, "Id", "Nazwa", zgloszenie.ProjektId);
-            // ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa", zgloszenie.StatusId);
             return View(zgloszenie);
         }
 
@@ -117,6 +143,7 @@ namespace BDwAI_BugTrackSys.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Temat,Opis,DataUtworzenia,ProjektId,PriorytetId,StatusId")] Zgloszenie zgloszenie)
         {
             if (id != zgloszenie.Id)
@@ -143,6 +170,22 @@ namespace BDwAI_BugTrackSys.Controllers
                     {
                         zgloszenie.UzytkownikId = oldZgloszenie.UzytkownikId;
                         zgloszenie.DataUtworzenia = oldZgloszenie.DataUtworzenia;
+
+                        if (oldZgloszenie.StatusId != zgloszenie.StatusId)
+                        {
+                            var nowyStatus = await _context.Statusy.FindAsync(zgloszenie.StatusId);
+                            string nazwaStatusu = nowyStatus?.Nazwa ?? "Nieznany";
+
+                            var powiadomienie = new Powiadomienie
+                            {
+                                UzytkownikId = zgloszenie.UzytkownikId,
+                                ZgloszenieId = zgloszenie.Id,
+                                Tresc = $"Status zgłoszenia '{zgloszenie.Temat}' został zmieniony na: {nazwaStatusu}",
+                                Data = DateTime.Now,
+                                CzyPrzeczytane = false
+                            };
+                            _context.Add(powiadomienie);
+                        }
                     }
 
                     _context.Update(zgloszenie);
@@ -166,7 +209,7 @@ namespace BDwAI_BugTrackSys.Controllers
             ViewData["StatusId"] = new SelectList(_context.Statusy, "Id", "Nazwa", zgloszenie.StatusId);
             return View(zgloszenie);
         }
-        
+
         // GET: Zgloszenia/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -217,17 +260,66 @@ namespace BDwAI_BugTrackSys.Controllers
                 return RedirectToAction("Details", new { id = zgloszenieId });
             }
 
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserName = User.Identity.Name ?? "Nieznany";
+
             var komentarz = new Komentarz
             {
                 ZgloszenieId = zgloszenieId,
                 Tresc = tresc,
                 DataDodania = DateTime.Now,
-                Autor = User.Identity.Name ?? "Nieznany"
+                Autor = currentUserName
             };
-
             _context.Add(komentarz);
-            await _context.SaveChangesAsync();
 
+            var zgloszenie = await _context.Zgloszenia.FindAsync(zgloszenieId);
+
+            if (zgloszenie != null)
+            {
+                string trescPowiadomienia = $"Nowy komentarz w zgłoszeniu '{zgloszenie.Temat}' od użytkownika {currentUserName}";
+
+                if (zgloszenie.UzytkownikId != currentUserId)
+                {
+                    var powiadomienie = new Powiadomienie
+                    {
+                        UzytkownikId = zgloszenie.UzytkownikId,
+                        ZgloszenieId = zgloszenie.Id,
+                        Tresc = trescPowiadomienia,
+                        Data = DateTime.Now,
+                        CzyPrzeczytane = false
+                    };
+                    _context.Add(powiadomienie);
+                }
+                if (!User.IsInRole("Admin"))
+                {
+                    var adminRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+                    if (adminRole != null)
+                    {
+                        var adminUserIds = await _context.UserRoles
+                            .Where(ur => ur.RoleId == adminRole.Id)
+                            .Select(ur => ur.UserId)
+                            .ToListAsync();
+
+                        foreach (var adminId in adminUserIds)
+                        {
+                            if (adminId != zgloszenie.UzytkownikId)
+                            {
+                                var powiadomienieAdmin = new Powiadomienie
+                                {
+                                    UzytkownikId = adminId,
+                                    ZgloszenieId = zgloszenie.Id,
+                                    Tresc = trescPowiadomienia,
+                                    Data = DateTime.Now,
+                                    CzyPrzeczytane = false
+                                };
+                                _context.Add(powiadomienieAdmin);
+                            }
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = zgloszenieId });
         }
         public IActionResult Success()

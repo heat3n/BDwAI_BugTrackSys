@@ -2,7 +2,34 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="text-center mt-5">
+        <h1 class="display-4">Witaj w Systemie!</h1>
+        <p class="lead">Zalogowano jako: <strong>@User.Identity.Name</strong></p>
+        <hr class="my-4">
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a class="btn btn-primary btn-lg px-4 gap-3" asp-controller="Zgloszenia" asp-action="Index">Przejdź do zgłoszeń</a>
+            <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Powiadomienia" asp-action="Index">Sprawdź powiadomienia</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+        <div class="text-center">
+            <h1 class="display-1 fw-bold text-primary mb-3">BDwAI_BTS</h1>
+            <h2 class="h1 mb-4 text-secondary">Bug Tracking System</h2>
+
+            <p class="lead mb-5 mx-auto" style="max-width: 600px;">
+                Zaawansowany system do śledzenia błędów i zarządzania projektami.
+                Aby rozpocząć pracę, zgłaszać błędy lub zarządzać projektami, musisz posiadać konto.
+            </p>
+
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a class="btn btn-primary btn-lg px-5 py-3 fw-bold" href="/Identity/Account/Register">Zarejestruj się</a>
+                <a class="btn btn-outline-dark btn-lg px-5 py-3 fw-bold" href="/Identity/Account/Login">Zaloguj się</a>
+            </div>
+        </div>
+    </div>
+}
