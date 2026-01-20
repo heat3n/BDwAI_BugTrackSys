@@ -1,7 +1,7 @@
-<div align="center">
+﻿<div align="center">
 
-# ?? Bug Tracking System
-###  System zarz?dzania zg?oszeniami w ASP.NET Core
+# 🐞 Bug Tracking System
+###  System zarządzania zgłoszeniami w ASP.NET Core
 
 
 </div>
@@ -9,30 +9,30 @@
 ---
 
 ## O projekcie
-**BugTrackSys** to aplikacja s?u??ca do kompleksowego zarz?dzania cyklem ?ycia zg?osze? b??d�w. Umo?liwia u?ytkownikom zg?aszanie problem�w, a administratorom efektywne zarz?dzanie ich statusem i priorytetem. System wspiera prac? zespo?ow? poprzez system komentarzy oraz powiadomienia w czasie rzeczywistym.
+**BugTrackSys** to aplikacja służąca do kompleksowego zarządzania cyklem życia zgłoszeń błędów. Umożliwia użytkownikom zgłaszanie problemów, a administratorom efektywne zarządzanie ich statusem i priorytetem. System wspiera pracę zespołową poprzez system komentarzy oraz powiadomienia w czasie rzeczywistym.
 
 ---
 
-## ?? Inicjalizacja i Technologia
+## 🛠 Inicjalizacja i Technologia
 
-Projekt zosta? utworzony w ?rodowisku Visual Studio przy u?yciu szablonu **ASP.NET Core Web App (MVC)**.
+Projekt został utworzony w środowisku Visual Studio przy użyciu szablonu **ASP.NET Core Web App (MVC)**.
 
-### ?? Konfiguracja Architektury
+### ⚙️ Konfiguracja Architektury
 * **Platforma:** `.NET 10.0`
 * **Baza danych:** `Microsoft SQL Server` (SQL Express)
 * **Uwierzytelnianie:** `Individual User Accounts` (Identity)
-* **Bezpiecze?stwo:** Wymuszone `HTTPS`
+* **Bezpieczeństwo:** Wymuszone `HTTPS`
 
-### ?? Kluczowe pakiety NuGet
+### 📦 Kluczowe pakiety NuGet
 | Pakiet | Zastosowanie |
 | :--- | :--- |
-| `Microsoft.EntityFrameworkCore.SqlServer` | Komunikacja z baz? danych MS SQL |
-| `Microsoft.AspNetCore.Identity.EntityFrameworkCore` | Obs?uga to?samo?ci, r�l i u?ytkownik�w |
+| `Microsoft.EntityFrameworkCore.SqlServer` | Komunikacja z bazą danych MS SQL |
+| `Microsoft.AspNetCore.Identity.EntityFrameworkCore` | Obsługa tożsamości, ról i użytkowników |
 | `Microsoft.AspNetCore.Identity.UI` | Gotowe widoki Razor dla logowania i rejestracji |
 | `Microsoft.VisualStudio.Web.CodeGeneration.Design` | Generowanie kodu (Scaffolding) |
 
-### ?? ?a?cuch po??czenia
-Konfiguracja bazy danych znajduje si? w pliku `appsettings.json`:
+### 🔌 Łańcuch połączenia
+Konfiguracja bazy danych znajduje się w pliku `appsettings.json`:
 
 ```json
 "ConnectionStrings": {
@@ -41,80 +41,81 @@ Konfiguracja bazy danych znajduje si? w pliku `appsettings.json`:
 ```
 ---
 
-## ?? G?�wne funkcjonalno?ci
+## 🚀 Główne funkcjonalności
 
-### ?? Funkcje u?ytkownika
+### 👤 Funkcje użytkownika
 -  Rejestracja i logowanie (ASP.NET Identity)
--  Dodawanie nowych zg?osze? b??d�w  
+-  Dodawanie nowych zgłoszeń błędów  
   *(przypisanie do projektu i priorytetu)*
--  Podgl?d **w?asnych zg?osze?**  
-  *(filtrowanie po ID zalogowanego u?ytkownika)*
--  Dodawanie komentarzy do zg?osze?
+-  Podgląd **własnych zgłoszeń**  
+  *(filtrowanie po ID zalogowanego użytkownika)*
+-  Dodawanie komentarzy do zgłoszeń
 -  Powiadomienia o:
-	- zmianie statusu zg?oszenia
+	- zmianie statusu zgłoszenia
 	- odpowiedzi administratora
 
 ---
 
-### ??? Funkcje administratora
--  Pe?ny dost?p do wszystkich zg?osze?
--  Zmiana status�w zg?osze?  
-  *(Nowe ? W trakcie ? Zako?czone)*
--  Zarz?dzanie s?ownikami:
+### 🛡️ Funkcje administratora
+-  Pełny dostęp do wszystkich zgłoszeń
+-  Zmiana statusów zgłoszeń  
+  *(Nowe → W trakcie → Zakończone)*
+-  Zarządzanie słownikami:
 	- Projekty
 	- Statusy
 	- Priorytety
 -  Powiadomienia o:
-	 - nowych zg?oszeniach
+	 - nowych zgłoszeniach
 	 - nowych komentarzach
 
 ---
 
-## ??? Baza danych
+## 🗄️ Baza danych
 
 ### Struktura encji
 
-System opiera si? na nast?puj?cych tabelach:
+System opiera się na następujących tabelach:
 
 | Encja | Opis |
 | --- | --- |
-| **Zgloszenie** | G?�wna encja systemu (temat, opis, daty, klucze obce) |
-| **Projekt** | S?ownik projekt�w  |
-| **Status** | Statusy zg?osze? |
-| **Priorytet** | Priorytety zg?osze?  |
+| **Zgloszenie** | Główna encja systemu (temat, opis, daty, klucze obce) |
+| **Projekt** | Słownik projektów  |
+| **Status** | Statusy zgłoszeń |
+| **Priorytet** | Priorytety zgłoszeń  |
 | **Komentarz** | Dyskusja i historia komunikacji |
-| **Powiadomienie** | Alerty systemowe dla u?ytkownik�w |
+| **Powiadomienie** | Alerty systemowe dla użytkowników |
 | **AspNetUsers / AspNetRoles** | Systemowe tabele ASP.NET Identity |
 
 ---
 
 ### Inicjalizacja danych
 
-Projekt posiada wbudowany mechanizm **Seed Data** (`DbInicjalizator`), kt�ry przy pierwszym uruchomieniu:
+Projekt posiada wbudowany mechanizm **Seed Data** (`DbInicjalizator`), który przy pierwszym uruchomieniu:
 
-1. Tworzy baz? danych (je?li nie istnieje)
+1. Tworzy bazę danych (jeśli nie istnieje)
 2. Dodaje role: **Admin**, **User**
 3. Tworzy konta testowe
-4. Uzupe?nia s?owniki systemowe
-5. Dodaje przyk?adowe zg?oszenia
+4. Uzupełnia słowniki systemowe
+5. Dodaje przykładowe zgłoszenia
 
 ---
 
-### U?ytkownicy testowi
+### Użytkownicy testowi
 
-Je?li baza danych zosta?a zainicjalizowana automatycznie, dost?pne s? nast?puj?ce konta:
+Jeśli baza danych została zainicjalizowana automatycznie, dostępne są następujące konta:
 
-| Rola | Email | Has?o |
+| Rola | Email | Hasło |
 | --- | --- | --- |
 | **Administrator** | `admin@admin.pl` | `Admin123!` |
 | **Administrator** | `test2@test.pl` | `Test123!` |
-| **U?ytkownik** | `test@test.pl` | `Test123!` |
+| **Użytkownik** | `test@test.pl` | `Test123!` |
 
 ---
 
-## ??REST API
+## 🔌REST API
 
-Aplikacja udost?pnia **REST API** dla obs?ugi zg?osze?:
+Aplikacja udostępnia **REST API** dla obsługi zgłoszeń:
 
 -  **Endpoint:** `/api/ZgloszeniaApi`
 -  Operacje CRUD dla encji **Zgloszenie**
+
