@@ -107,7 +107,6 @@ Jeśli baza danych została zainicjalizowana automatycznie, dostępne są nastę
 | Rola | Email | Hasło |
 | --- | --- | --- |
 | **Administrator** | `admin@admin.pl` | `Admin123!` |
-| **Administrator** | `test2@test.pl` | `Test123!` |
 | **Użytkownik** | `test@test.pl` | `Test123!` |
 
 ---
